@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nipun Arora | Terminal</title>
+    <style>
+        /* --- 1. FONTS & RESET --- */
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- 2. BACKGROUND CONFIG --- */
+        body {
+            background-color: #000000;
+            
+            /* The deep, dark "in-between" gradient you liked */
+            background-image: radial-gradient(circle at 50% 50%, #08040a 0%, #020103 50%, #000000 100%);
+            
+            font-family: 'Share Tech Mono', monospace;
+            color: #d84339; /* Rust red accent */
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Canvas covers the screen behind the text */
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; 
+        }
+
+        /* --- 3. UI LAYOUT --- */
+        .content-wrapper {
+            position: relative;
+            z-index: 10; 
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Let clicks pass through to canvas where no text is */
+        }
+        
+        .terminal-id {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            font-size: 14px;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            color: #fff;
+        }
+
+        .hero-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 100%;
+        }
+
+        .hero-name {
+            font-size: clamp(3rem, 11vw, 9rem);
+            text-transform: uppercase;
+            font-weight: normal;
+            letter-spacing: -5px;
+            -webkit-text-stroke: 1px #d84339; 
+            color: transparent; 
+            filter: drop-shadow(0 0 5px rgba(216, 67, 57, 0.2));
+            transition: 0.3s;
+        }
+
+        .cross-line {
+            position: absolute;
+            top: 52%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #d84339, transparent);
+            opacity: 0.3;
+        }
+
+        .nav-links {
+            position: absolute;
+            top: 52%;
+            left: 5%;
+            display: flex;
+            gap: 30px;
+            font-size: 14px;
+            pointer-events: auto; /* Re-enable clicks for links */
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+            color: #d84339;
+            text-shadow: 0 0 8px rgba(216, 67, 57, 0.6);
+        }
+
+        .system-stats {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            text-align: right;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #555;
+            pointer-events: auto;
+        }
+
+        .stat-highlight { color: #4aff4a; }
+        
+        .cursor-blink { animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="content-wrapper">
+        <div class="terminal-id">TERMINAL_01</div>
+
+        <div class="hero-container">
+            <h1 class="hero-name">Nipun Arora</h1>
+            <div class="cross-line"></div>
+        </div>
+
+        <nav class="nav-links">
+            <a href="#">// PROJECTS</a>
+            <a href="#">// RESUME</a>
+            <a href="#">// GITHUB</a>
+        </nav>
+
+        <div class="system-stats">
+            <div>SYSTEM: <span class="stat-highlight">ONLINE</span></div>
+            <div>TEMP: 210°C</div>
+            <div>_CURSOR ACTIVE<span class="cursor-blink">_</span></div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let particles = [];
+        const particleCount = 80; 
+        const connectionDistance = 120;
+        
+        // MOUSE OBJECT
+        let mouse = {
+            x: null,
+            y: null,
+            radius: 200 // Radius of interaction
+        }
+
+        // TRACK MOUSE MOVEMENT
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+        
+        // Handle mouse leaving window
+        window.addEventListener('mouseout', () => {
+            mouse.x = undefined;
+            mouse.y = undefined;
+        });
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.6; // Speed
+                this.vy = (Math.random() - 0.5) * 0.6;
+                this.size = Math.random() * 2;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce off edges
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                
+                // MOUSE INTERACTION (Optional: gentle push away if too close? 
+                // Or just let lines handle it? Let's keep position simple for now)
+            }
+
+            draw() {
+                ctx.fillStyle = 'rgba(216, 67, 57, 0.6)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                // 1. Connect Particle to Particle
+                for (let j = i; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < connectionDistance) {
+                        ctx.beginPath();
+                        let opacity = 1 - (distance / connectionDistance);
+                        ctx.strokeStyle = `rgba(216, 67, 57, ${opacity * 0.2})`;
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+
+                // 2. Connect Particle to MOUSE
+                if (mouse.x != undefined) {
+                    const dx = particles[i].x - mouse.x;
+                    const dy = particles[i].y - mouse.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < mouse.radius) {
+                        ctx.beginPath();
+                        // Lines to mouse are slightly brighter
+                        let opacity = 1 - (distance / mouse.radius);
+                        ctx.strokeStyle = `rgba(216, 67, 57, ${opacity * 0.4})`;
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
