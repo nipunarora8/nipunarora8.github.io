@@ -7,10 +7,9 @@
     <style>
         /* --- 1. FONTS & RESET --- */
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* --- 2. BACKGROUND CONFIG (UNCHANGED) --- */
+        /* --- 2. BACKGROUND CONFIG --- */
         body {
             background-color: #000000;
             background-image: radial-gradient(circle at 50% 50%, #08040a 0%, #020103 50%, #000000 100%);
@@ -23,31 +22,18 @@
 
         /* --- 3. UI LAYOUT --- */
         .ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
-        
-        /* UPDATED NAV LINKS POSITIONING */
-        .nav-links { 
-            position: absolute; 
-            /* Moved below the name (center is 50%) */
-            top: 65%; 
-            /* Centered Horizontally */
-            left: 50%; 
-            transform: translateX(-50%); 
-            
-            display: flex; 
-            gap: 50px; /* Increased gap for cleaner look */
-            font-size: 16px; 
-            pointer-events: auto; 
-        }
-        
+        .nav-links { position: absolute; top: 65%; left: 50%; transform: translateX(-50%); display: flex; gap: 50px; font-size: 16px; pointer-events: auto; }
         .nav-links a { color: #ffffff; text-decoration: none; letter-spacing: 1px; opacity: 0.6; transition: 0.3s; }
         .nav-links a:hover { opacity: 1; color: #d84339; text-shadow: 0 0 8px rgba(216, 67, 57, 0.6); }
         
-        .system-stats { position: absolute; bottom: 40px; right: 40px; text-align: right; font-size: 12px; line-height: 1.6; color: #555; pointer-events: auto; }
+        /* Ensure parent has relative position for the cat */
+        .system-stats { position: absolute; bottom: 40px; right: 40px; text-align: right; font-size: 12px; line-height: 1.6; color: #555; pointer-events: auto; z-index: 55; }
+        
         .stat-highlight { color: #4aff4a; }
         .cursor-blink { animation: blink 1s step-end infinite; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* --- 4. STAGE & TEXT (UNCHANGED) --- */
+        /* --- 4. STAGE & TEXT --- */
         .stage-container { position: relative; z-index: 5; width: auto; transform: perspective(1000px) rotateX(5deg); }
         .hero-container { position: relative; text-align: center; padding: 20px; }
         .hero-font-style { font-size: clamp(3rem, 11vw, 9rem); text-transform: uppercase; font-weight: normal; letter-spacing: -5px; line-height: 1; }
@@ -55,42 +41,16 @@
         .text-printed { display: block; color: transparent; -webkit-text-stroke: 1px #d84339; filter: drop-shadow(0 0 5px rgba(216, 67, 57, 0.2)); clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); }
         .cross-line { position: absolute; top: 55%; left: -50%; width: 200%; height: 1px; background: linear-gradient(90deg, transparent, #d84339, transparent); opacity: 0.3; z-index: -1; }
 
-
-        /* =========================================
-           --- 5. THE EXTRUDER MODEL ---
-           ========================================= */
-        .extruder-assembly {
-            position: absolute; top: 0; left: 0; width: 90px; height: 200px; z-index: 20; pointer-events: none;
-            transform: translate(-50%, -60%); filter: drop-shadow(8px 8px 20px rgba(0,0,0,1));
-        }
-
-        /* The Short Filament Feed from top */
-        .filament-feed-in {
-            position: absolute;
-            bottom: 165px; 
-            left: 50%;
-            transform: translateX(-50%);
-            width: 3px; 
-            height: 7vh; /* Kept your preference */
-            background: #d84339; 
-            z-index: 0; 
-            opacity: 0.9;
-        }
-
+        /* --- 5. THE EXTRUDER MODEL --- */
+        .extruder-assembly { position: absolute; top: 0; left: 0; width: 90px; height: 200px; z-index: 20; pointer-events: none; transform: translate(-50%, -60%); filter: drop-shadow(8px 8px 20px rgba(0,0,0,1)); }
+        .filament-feed-in { position: absolute; bottom: 165px; left: 50%; transform: translateX(-50%); width: 3px; height: 7vh; background: #d84339; z-index: 0; opacity: 0.9; }
         .cable-loom { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 20px; height: 40px; background: repeating-linear-gradient(45deg, #111, #111 2px, #222 2px, #222 4px); border-radius: 5px 5px 0 0; border: 1px solid #333; z-index: 1; }
         .gear-housing { position: absolute; top: 35px; left: 50%; transform: translateX(-50%); width: 80px; height: 50px; background: linear-gradient(to bottom, #2a2a2a, #1a1a1a); border: 2px solid #333; border-radius: 5px; box-shadow: inset 0 0 15px #000; overflow: hidden; z-index: 2; }
         .gear-housing::before { content: ''; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); width: 3px; height: 30px; background: #d84339; box-shadow: 0 0 10px #d84339; }
         .gear-housing::after { content: ''; position: absolute; right: 5px; top: 50%; transform: translateY(-50%); width: 3px; height: 30px; background: #d84339; box-shadow: 0 0 10px #d84339; }
-        
-        .drive-gear, .idler-gear { 
-            position: absolute; top: 50%; width: 24px; height: 24px; 
-            border-radius: 50%; border: 2px dashed #777; 
-            background: conic-gradient(from 0deg, #222 0deg 90deg, #333 90deg 180deg, #222 180deg 270deg, #333 270deg 360deg);
-            box-shadow: inset 0 0 2px #000;
-        }
+        .drive-gear, .idler-gear { position: absolute; top: 50%; width: 24px; height: 24px; border-radius: 50%; border: 2px dashed #777; background: conic-gradient(from 0deg, #222 0deg 90deg, #333 90deg 180deg, #222 180deg 270deg, #333 270deg 360deg); box-shadow: inset 0 0 2px #000; }
         .drive-gear { left: 15px; animation: rotateReverse 0.5s linear infinite; }
         .idler-gear { right: 15px; animation: rotateForward 0.5s linear infinite; }
-
         .filament-path { position: absolute; left: 50%; top: 0; height: 100%; width: 3px; background: #d84339; transform: translateX(-50%); opacity: 0.8; }
         .main-shroud { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); width: 70px; height: 60px; background: linear-gradient(135deg, #222 30%, #111 100%); clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%); border-top: 2px solid #333; z-index: 3; }
         .radiator-fins { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 40px; background: repeating-linear-gradient(to bottom, #555, #555 2px, #333 2px, #333 6px); border: 1px solid #222; }
@@ -100,19 +60,85 @@
         .heater-block-sock { width: 28px; height: 20px; background: #a93226; border-radius: 4px; border: 1px solid #7b241c; margin: 0 auto; position: relative; }
         .heater-wires { position: absolute; right: -12px; top: 4px; width: 12px; height: 8px; background: repeating-linear-gradient(to right, #c0392b, #c0392b 3px, #111 3px, #111 6px); border-radius: 2px; }
         .nozzle-tip { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 14px solid #d4af37; margin: 0 auto; position: relative; top: -2px; }
-        
-        .nozzle-glow {
-            width: 8px; height: 8px; background: #fff; border-radius: 50%;
-            position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
-            box-shadow: 0 0 5px 3px #fff, 0 0 20px 8px #ff7b00, 0 0 40px 15px #d84339;
-            animation: heatFlickerIntense 0.04s infinite alternate;
-        }
+        .nozzle-glow { width: 8px; height: 8px; background: #fff; border-radius: 50%; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); box-shadow: 0 0 5px 3px #fff, 0 0 20px 8px #ff7b00, 0 0 40px 15px #d84339; animation: heatFlickerIntense 0.04s infinite alternate; }
         .molten-spark { position: absolute; width: 3px; height: 3px; background: #fff; border-radius: 50%; box-shadow: 0 0 5px #ff7b00, 0 0 10px #d84339; pointer-events: none; opacity: 0; }
         .heat-smoke { position: absolute; width: 10px; height: 10px; background: radial-gradient(circle, rgba(216, 67, 57, 0.4) 0%, transparent 70%); border-radius: 50%; pointer-events: none; opacity: 0; filter: blur(2px); }
 
         @keyframes rotateForward { from { transform: translateY(-50%) rotate(0deg); } to { transform: translateY(-50%) rotate(360deg); } }
         @keyframes rotateReverse { from { transform: translateY(-50%) rotate(360deg); } to { transform: translateY(-50%) rotate(0deg); } }
         @keyframes heatFlickerIntense { 0% { opacity: 0.9; transform: translateX(-50%) scale(1); filter: brightness(1); } 100% { opacity: 1; transform: translateX(-50%) scale(1.3); filter: brightness(1.2); } }
+
+
+        /* =========================================
+           --- 6. THE SLEEPY CAT (REPOSITIONED) ---
+           ========================================= */
+        
+        /* Container positioned RELATIVE TO THE STATS BLOCK */
+        .cat-container {
+            position: absolute; /* Now absolute relative to .system-stats */
+            bottom: 100%; /* Sit exactly on the top edge */
+            right: -15px; /* Align right edges */
+            margin-bottom: -18px; /* Snug it down onto the text slightly */
+            width: 350px;
+            height: 200px;
+            z-index: 60; /* Ensure above text */
+            transform: scale(0.35); /* Keep cute size */
+            transform-origin: bottom right;
+            opacity: 0; /* Start Hidden */
+            transition: opacity 2s ease-in-out;
+            pointer-events: none; /* Let clicks pass through to text if needed */
+        }
+
+        .cat-main {
+            background-color: #f19b1a;
+            height: 65px; width: 80px;
+            border-radius: 0 80px 80px 0;
+            position: absolute; bottom: 60px; right: 50px;
+        }
+        .ear { height: 15px; width: 15px; background-color: #f19b1a; position: absolute; bottom: 64px; left: 8px; border-radius: 20px 0 0 0; box-shadow: 25px 0 #f19b1a; }
+        .eye, .eye:before { height: 2px; width: 10px; background: #2c2c2c; position: absolute; border-radius: 0; top: 25px;}
+        .eye { left: 15px; }
+        .eye:before { content: ""; left: 30px; position: absolute; height: 2px; width: 10px; background: #2c2c2c;}
+        .nose { background-color: #ffffff; height: 12px; width: 12px; border-radius: 50%; position: absolute; top: 32px; left: 25px; box-shadow: 12px 0 #ffffff; }
+        .nose:before { content: ""; width: 12px; height: 8px; position: absolute; background-color: #ffffff; left: 6px; }
+        .nose:after { content: ""; position: absolute; height: 0; width: 0; border-top: 8px solid #ef926b; border-left: 5px solid transparent; border-right: 5px solid transparent; bottom: 7px; left: 6px; }
+        
+        .mouth {
+            background-color: #2c2c2c; height: 15px; width: 17px;
+            position: absolute; border-radius: 0 0 5px 5px;
+            top: 38px; left: 27px;
+            animation: mouth-move 2s infinite;
+            transform-origin: top;
+        }
+        @keyframes mouth-move { 50% { transform: scaleY(0.7); } }
+        
+        .cat-body-torso {
+            background-color: #f19b1a; height: 90px; width: 140px;
+            position: absolute; right: 65px; bottom: 0;
+            border-radius: 60px 60px 0 0;
+            animation: sleep 2s infinite;
+            transform-origin: bottom right;
+        }
+        @keyframes sleep { 50% { transform: scale(0.9, 1.05); } }
+        
+        .tail { background-color: #d07219; height: 20px; width: 100px; position: absolute; right: 150px; bottom: 0; border-radius: 20px 0 0 20px; }
+        .cat-body-torso:before { content: ""; position: absolute; background-color: #ffffff; height: 12px; width: 30px; border-radius: 6px; bottom: 0; left: 22px; box-shadow: 45px 0 #ffffff; }
+        
+        .bubble {
+            height: 20px; width: 20px; background-color: rgba(255, 255, 255, 0.4);
+            position: absolute; left: 65px; top: 20px;
+            border-radius: 50px 50px 50px 5px;
+            animation: bubble-scale 2s infinite;
+        }
+        @keyframes bubble-scale { 50% { transform: scale(1.6); } }
+        
+        .cat-shadow {
+            height: 10px; width: 240px; background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px; position: absolute; bottom: 52px; left: 70px;
+            animation: shadow 2s infinite;
+        }
+        @keyframes shadow { 50% { transform: scaleX(0.7); } }
+
     </style>
 </head>
 <body>
@@ -127,6 +153,19 @@
         </nav>
         
         <div class="system-stats">
+             <div class="cat-container" id="sleepingCat">
+                <div class="cat-shadow"></div>
+                <div class="cat-main">
+                    <div class="ear"></div>
+                    <div class="eye"></div>
+                    <div class="mouth"></div>
+                    <div class="nose"></div>
+                    <div class="tail"></div>
+                    <div class="cat-body-torso"></div>
+                    <div class="bubble"></div>
+                </div>
+            </div>
+            
             <div id="status-text">SYSTEM: <span class="stat-highlight">INITIALIZING...</span></div>
             <div>NOZZLE: 215°C</div>
             <div>BED: 60°C</div>
@@ -141,7 +180,6 @@
 
         <div class="extruder-assembly" id="extruder">
             <div class="filament-feed-in"></div>
-
             <div class="cable-loom"></div>
             <div class="gear-housing">
                 <div class="filament-path"></div>
@@ -155,9 +193,7 @@
                 </div>
             </div>
             <div class="hotend-assembly" id="hotend">
-                <div class="heater-block-sock">
-                    <div class="heater-wires"></div>
-                </div>
+                <div class="heater-block-sock"><div class="heater-wires"></div></div>
                 <div class="nozzle-tip"></div>
                 <div class="nozzle-glow" id="nozzleGlow"></div>
             </div>
@@ -165,6 +201,7 @@
     </div>
 
     <script>
+        // --- 1. PARTICLE BACKGROUND ---
         const canvas = document.getElementById('particle-canvas'); const ctx = canvas.getContext('2d');
         let particles = []; const particleCount = 80; const connectionDistance = 120;
         let mouse = { x: null, y: null, radius: 200 };
@@ -177,6 +214,7 @@
         function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); for (let i = 0; i < particles.length; i++) { particles[i].update(); particles[i].draw(); for (let j = i; j < particles.length; j++) { const dx = particles[i].x - particles[j].x; const dy = particles[i].y - particles[j].y; const dist = Math.sqrt(dx * dx + dy * dy); if (dist < connectionDistance) { ctx.beginPath(); ctx.strokeStyle = `rgba(216, 67, 57, ${ (1 - dist / connectionDistance) * 0.2})`; ctx.lineWidth = 1; ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke(); } } if (mouse.x != undefined) { const dx = particles[i].x - mouse.x; const dy = particles[i].y - mouse.y; const dist = Math.sqrt(dx * dx + dy * dy); if (dist < mouse.radius) { ctx.beginPath(); ctx.strokeStyle = `rgba(216, 67, 57, ${ (1 - dist / mouse.radius) * 0.4})`; ctx.lineWidth = 1; ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke(); } } } requestAnimationFrame(animate); }
         init(); animate();
 
+        // --- 2. PRINT LOGIC ---
         const textElement = document.getElementById('target-text');
         const extruder = document.getElementById('extruder');
         const hotend = document.getElementById('hotend');
@@ -206,6 +244,12 @@
             }
             animateParticle();
         }
+
+        // --- FADE IN THE SLEEPING CAT ---
+        function triggerSleepingCat() {
+            document.getElementById('sleepingCat').style.opacity = '1';
+        }
+
 
         function animatePrint(timestamp) {
             if (!startTime) startTime = timestamp;
@@ -245,6 +289,12 @@
                 extruder.style.top = "-250px"; 
                 extruder.style.opacity = "0";
                 extruder.style.transform = `translate(-50%, -60%)`; 
+
+                // --- TRIGGER THE SLEEPING CAT ---
+                // Wait 1.5s then fade in the cat
+                setTimeout(() => {
+                    triggerSleepingCat();
+                }, 1500);
             }
         }
 
