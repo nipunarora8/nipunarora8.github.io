@@ -1,0 +1,1155 @@
+/* --- 1. FONTS & RESET --- */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;600&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- 2. BACKGROUND & SCROLL SETUP --- */
+body {
+    background-color: #000000;
+    background-image: radial-gradient(circle at 50% 50%, #08040a 0%, #020103 50%, #000000 100%);
+    font-family: 'Share Tech Mono', monospace;
+    color: #d84339;
+    min-height: 100vh;
+    margin: 0;
+    /* Strict Scroll Snapping */
+    overflow-x: hidden;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+}
+
+/* SNAP SECTIONS */
+.snap-scroll-container {
+    position: relative;
+    width: 100%;
+    z-index: 30;
+    /* Above fixed background, below interaction layers if needed */
+    pointer-events: none;
+    /* Allow clicks to pass through to fixed elements */
+}
+
+.snap-section {
+    min-height: 100vh;
+    width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    /* Force stop at each section */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+}
+
+/* Enable pointer events for content inside snap sections (like projects) */
+.snap-section>* {
+    pointer-events: auto;
+
+}
+
+#particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* --- 3. UI LAYOUT --- */
+#fixed-viewport {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 20;
+    transition: opacity 0.5s ease;
+}
+
+.nav-links {
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 50px;
+    font-size: 16px;
+    pointer-events: auto;
+}
+
+.nav-links a {
+    color: #ffffff;
+    text-decoration: none;
+    letter-spacing: 1px;
+    opacity: 0.6;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.nav-links a:hover {
+    opacity: 1;
+    color: #d84339;
+    text-shadow: 0 0 8px rgba(216, 67, 57, 0.6);
+}
+
+.system-stats {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    text-align: right;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #555;
+    pointer-events: auto;
+    z-index: 55;
+    transition: opacity 0.5s ease;
+}
+
+.stat-highlight {
+    color: #4aff4a;
+}
+
+/* --- 4. MAIN STAGE (GRID STACK FIX) --- */
+.stage-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 15;
+    transform: perspective(1000px) rotateX(5deg);
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s ease;
+}
+
+.stage-recede {
+    transform: perspective(1000px) rotateX(5deg) scale(0.8) translateY(-100px);
+    opacity: 0;
+    filter: blur(10px);
+}
+
+.ui-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.hero-container {
+    position: relative;
+    text-align: center;
+    padding: 20px;
+    white-space: nowrap;
+}
+
+/* GRID STACK: Forces both texts to occupy the EXACT same space */
+#hero-text-wrapper {
+    display: grid;
+    place-items: center;
+}
+
+.hero-font-style {
+    /* Both elements sit in Row 1, Column 1 */
+    grid-area: 1 / 1;
+    font-size: clamp(3rem, 10vw, 8rem);
+    text-transform: uppercase;
+    font-weight: normal;
+    letter-spacing: -5px;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    /* Remove default spacing */
+}
+
+.text-guide {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(216, 67, 57, 0.15);
+    z-index: 1;
+    /* Removed absolute positioning to rely on Grid */
+}
+
+.text-printed {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1px #d84339;
+    filter: drop-shadow(0 0 5px rgba(216, 67, 57, 0.2));
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    z-index: 2;
+}
+
+/* --- 5. EXTRUDER & CAT CSS --- */
+.extruder-assembly {
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    width: 90px;
+    height: 200px;
+    z-index: 20;
+    pointer-events: none;
+    transform: translate(-50%, -100%);
+    filter: drop-shadow(8px 8px 20px rgba(0, 0, 0, 1));
+}
+
+.filament-feed-in {
+    position: absolute;
+    bottom: 165px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 100vh;
+    background: #d84339;
+    z-index: 0;
+    opacity: 0.9;
+}
+
+.cable-loom {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 40px;
+    background: repeating-linear-gradient(45deg, #111, #111 2px, #222 2px, #222 4px);
+    border-radius: 5px 5px 0 0;
+    border: 1px solid #333;
+    z-index: 1;
+}
+
+.gear-housing {
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 50px;
+    background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+    border: 2px solid #333;
+    border-radius: 5px;
+    box-shadow: inset 0 0 15px #000;
+    overflow: hidden;
+    z-index: 2;
+}
+
+.gear-housing::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 30px;
+    background: #d84339;
+    box-shadow: 0 0 10px #d84339;
+}
+
+.gear-housing::after {
+    content: '';
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 30px;
+    background: #d84339;
+    box-shadow: 0 0 10px #d84339;
+}
+
+.drive-gear,
+.idler-gear {
+    position: absolute;
+    top: 50%;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px dashed #777;
+    background: conic-gradient(from 0deg, #222 0deg 90deg, #333 90deg 180deg, #222 180deg 270deg, #333 270deg 360deg);
+    box-shadow: inset 0 0 2px #000;
+}
+
+.drive-gear {
+    left: 15px;
+    animation: rotateReverse 0.5s linear infinite;
+}
+
+.idler-gear {
+    right: 15px;
+    animation: rotateForward 0.5s linear infinite;
+}
+
+.filament-path {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: #d84339;
+    transform: translateX(-50%);
+    opacity: 0.8;
+}
+
+.main-shroud {
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 60px;
+    background: linear-gradient(135deg, #222 30%, #111 100%);
+    clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
+    border-top: 2px solid #333;
+    z-index: 3;
+}
+
+.radiator-fins {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 40px;
+    background: repeating-linear-gradient(to bottom, #555, #555 2px, #333 2px, #333 6px);
+    border: 1px solid #222;
+}
+
+.hotend-fan-grill {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 36px;
+    height: 36px;
+    border: 2px solid #888;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.fan-blades-spin {
+    width: 100%;
+    height: 100%;
+    background: conic-gradient(from 0deg at 50% 50%, #222 0deg 45deg, transparent 45deg 90deg, #222 90deg 135deg, transparent 135deg 180deg, #222 180deg 225deg, transparent 225deg 270deg, #222 270deg 315deg, transparent 315deg 360deg);
+    animation: rotateForward 0.2s linear infinite;
+    border-radius: 50%;
+    opacity: 0.7;
+}
+
+.hotend-assembly {
+    position: absolute;
+    top: 135px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    z-index: 1;
+}
+
+.heater-block-sock {
+    width: 28px;
+    height: 20px;
+    background: #a93226;
+    border-radius: 4px;
+    border: 1px solid #7b241c;
+    margin: 0 auto;
+    position: relative;
+}
+
+.heater-wires {
+    position: absolute;
+    right: -12px;
+    top: 4px;
+    width: 12px;
+    height: 8px;
+    background: repeating-linear-gradient(to right, #c0392b, #c0392b 3px, #111 3px, #111 6px);
+    border-radius: 2px;
+}
+
+.nozzle-tip {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 14px solid #d4af37;
+    margin: 0 auto;
+    position: relative;
+    top: -2px;
+}
+
+.nozzle-glow {
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 5px 3px #fff, 0 0 20px 8px #ff7b00, 0 0 40px 15px #d84339;
+    animation: heatFlickerIntense 0.04s infinite alternate;
+}
+
+.molten-spark {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #ff7b00, 0 0 10px #d84339;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.heat-smoke {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(circle, rgba(216, 67, 57, 0.4) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    filter: blur(2px);
+}
+
+@keyframes rotateForward {
+    from {
+        transform: translateY(-50%) rotate(0deg);
+    }
+
+    to {
+        transform: translateY(-50%) rotate(360deg);
+    }
+}
+
+@keyframes rotateReverse {
+    from {
+        transform: translateY(-50%) rotate(360deg);
+    }
+
+    to {
+        transform: translateY(-50%) rotate(0deg);
+    }
+}
+
+@keyframes heatFlickerIntense {
+    0% {
+        opacity: 0.9;
+        transform: translateX(-50%) scale(1);
+        filter: brightness(1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1.3);
+        filter: brightness(1.2);
+    }
+}
+
+/* Cat CSS */
+.cat-container {
+    position: absolute;
+    bottom: 100%;
+    right: -15px;
+    margin-bottom: -18px;
+    width: 350px;
+    height: 200px;
+    z-index: 60;
+    transform: scale(0.35);
+    transform-origin: bottom right;
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+    pointer-events: none;
+}
+
+.cat-main {
+    background-color: #f19b1a;
+    height: 65px;
+    width: 80px;
+    border-radius: 0 80px 80px 0;
+    position: absolute;
+    bottom: 60px;
+    right: 50px;
+}
+
+.ear {
+    height: 15px;
+    width: 15px;
+    background-color: #f19b1a;
+    position: absolute;
+    bottom: 64px;
+    left: 8px;
+    border-radius: 20px 0 0 0;
+    box-shadow: 25px 0 #f19b1a;
+}
+
+.eye,
+.eye:before {
+    height: 2px;
+    width: 10px;
+    background: #2c2c2c;
+    position: absolute;
+    border-radius: 0;
+    top: 25px;
+}
+
+.eye {
+    left: 15px;
+}
+
+.eye:before {
+    content: "";
+    left: 30px;
+    position: absolute;
+    height: 2px;
+    width: 10px;
+    background: #2c2c2c;
+}
+
+.nose {
+    background-color: #ffffff;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    position: absolute;
+    top: 32px;
+    left: 25px;
+    box-shadow: 12px 0 #ffffff;
+}
+
+.nose:before {
+    content: "";
+    width: 12px;
+    height: 8px;
+    position: absolute;
+    background-color: #ffffff;
+    left: 6px;
+}
+
+.nose:after {
+    content: "";
+    position: absolute;
+    height: 0;
+    width: 0;
+    border-top: 8px solid #ef926b;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    bottom: 7px;
+    left: 6px;
+}
+
+.mouth {
+    background-color: #2c2c2c;
+    height: 15px;
+    width: 17px;
+    position: absolute;
+    border-radius: 0 0 5px 5px;
+    top: 38px;
+    left: 27px;
+    animation: mouth-move 2s infinite;
+    transform-origin: top;
+}
+
+.cat-body-torso {
+    background-color: #f19b1a;
+    height: 90px;
+    width: 140px;
+    position: absolute;
+    right: 65px;
+    bottom: 0;
+    border-radius: 60px 60px 0 0;
+    animation: sleep 2s infinite;
+    transform-origin: bottom right;
+}
+
+.tail {
+    background-color: #d07219;
+    height: 20px;
+    width: 100px;
+    position: absolute;
+    right: 150px;
+    bottom: 0;
+    border-radius: 20px 0 0 20px;
+}
+
+.cat-body-torso:before {
+    content: "";
+    position: absolute;
+    background-color: #ffffff;
+    height: 12px;
+    width: 30px;
+    border-radius: 6px;
+    bottom: 0;
+    left: 22px;
+    box-shadow: 45px 0 #ffffff;
+}
+
+.bubble {
+    height: 20px;
+    width: 20px;
+    background-color: rgba(255, 255, 255, 0.4);
+    position: absolute;
+    left: 65px;
+    top: 20px;
+    border-radius: 50px 50px 50px 5px;
+    animation: bubble-scale 2s infinite;
+}
+
+.cat-shadow {
+    height: 10px;
+    width: 240px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    position: absolute;
+    bottom: 52px;
+    left: 70px;
+    animation: shadow 2s infinite;
+}
+
+@keyframes sleep {
+    50% {
+        transform: scale(0.9, 1.05);
+    }
+}
+
+@keyframes mouth-move {
+    50% {
+        transform: scaleY(0.7);
+    }
+}
+
+@keyframes bubble-scale {
+    50% {
+        transform: scale(1.6);
+    }
+}
+
+@keyframes shadow {
+    50% {
+        transform: scaleX(0.7);
+    }
+}
+
+/* =========================================
+    --- 7. FUTURISTIC SCENE (UPDATED LAMPS) ---
+    ========================================= */
+
+.scene-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    /* Enable Scroll within the scene-overlay */
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Custom Scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: #d84339 #1a1a1a;
+}
+
+.scene-overlay::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scene-overlay::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+.scene-overlay::-webkit-scrollbar-thumb {
+    background-color: #d84339;
+    border-radius: 4px;
+}
+
+.lamp-column {
+    position: fixed;
+    bottom: -100%;
+    /* Changed to fixed so they stay during scroll */
+    width: 40px;
+    height: 85vh;
+    background: linear-gradient(90deg, #1a1a1a, #0d0d0d, #1a1a1a);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 1);
+    transition: bottom 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 90;
+}
+
+.lamp-left {
+    left: 8%;
+}
+
+.lamp-right {
+    right: 8%;
+}
+
+/* Light Emitter */
+.lamp-emitter {
+    width: 8px;
+    height: 95%;
+    background: #222;
+    border-radius: 4px;
+    transition: all 0.5s ease;
+    position: relative;
+}
+
+/* Volumetric Beam */
+.lamp-column::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 90%;
+    background: radial-gradient(ellipse at center, rgba(255, 240, 220, 0.05) 0%, transparent 60%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    filter: blur(20px);
+}
+
+/* Jute String */
+.jute-string-container {
+    position: fixed;
+    top: -300px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* Fixed to stay on screen */
+    width: 40px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform-origin: top center;
+    cursor: pointer;
+    pointer-events: auto;
+    z-index: 101;
+}
+
+.jute-string {
+    width: 6px;
+    height: 100%;
+    background: repeating-linear-gradient(45deg, #e0d5c1, #e0d5c1 2px, #bdaea1 3px, #bdaea1 4px);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    border-radius: 0 0 3px 3px;
+}
+
+.string-end-knot {
+    width: 16px;
+    height: 20px;
+    background: #e0d5c1;
+    border-radius: 4px;
+    margin-top: -2px;
+    background: repeating-linear-gradient(-45deg, #e0d5c1, #e0d5c1 2px, #bdaea1 3px, #bdaea1 4px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes stringDropDangle {
+    0% {
+        top: -300px;
+        transform: translateX(-50%) rotate(0deg);
+    }
+
+    30% {
+        top: 0;
+        transform: translateX(-50%) rotate(10deg);
+    }
+
+    60% {
+        transform: translateX(-50%) rotate(-5deg);
+    }
+
+    100% {
+        top: 0;
+        transform: translateX(-50%) rotate(0deg);
+    }
+}
+
+.string-pulled {
+    animation: pullPhysics 0.4s ease-in-out;
+}
+
+@keyframes pullPhysics {
+    0% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    50% {
+        transform: translateX(-50%) translateY(30px);
+    }
+
+    100% {
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Content Scroll Wrapper */
+.content-scroll-wrapper {
+    position: relative;
+    width: 100%;
+    z-index: 30;
+    /* Above the fixed viewport */
+    pointer-events: none;
+    /* Let clicks pass through empty space */
+}
+
+/* Spacer allows scrolling "past" the room initially */
+.scroll-spacer {
+    height: 150vh;
+    width: 100%;
+    pointer-events: none;
+}
+
+/* Update About Card - RESTORED TO ORIGINAL BEHAVIOR */
+.about-content-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease, transform 0.5s ease;
+}
+
+/* Only visible when lights are on */
+.lights-on .about-content-layer {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Fade out when scrolling down to projects */
+.projects-visible .about-content-layer {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+.projects-visible .lamp-column {
+    opacity: 0;
+    transform: translateY(-100px);
+}
+
+.projects-visible .jute-string-container {
+    opacity: 0;
+    transform: translateY(-100px);
+}
+
+.about-card {
+    background: rgba(15, 15, 18, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 60px 80px;
+    /* More horizontal padding */
+    width: 90%;
+    max-width: 900px;
+    /* Wider container */
+    text-align: left;
+    /* Better readability */
+    color: #eee;
+    box-shadow: 0 50px 100px rgba(0, 0, 0, 1);
+    transform: scale(0.95);
+    transition: transform 0.8s ease;
+    line-height: 1.8;
+    /* Improve reading flow */
+}
+
+.about-p {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    font-family: 'Inter', sans-serif;
+    /* Cleaner font for body text */
+}
+
+.about-heading {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2rem;
+    color: #d84339;
+    letter-spacing: 2px;
+    border-bottom: 1px solid rgba(216, 67, 57, 0.3);
+    padding-bottom: 15px;
+    display: inline-block;
+}
+
+.lights-on .about-card {
+    transform: scale(1);
+}
+
+
+/* --- PROJECTS SECTION (PCB THEME) --- */
+.projects-section {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 20px 200px 20px;
+    text-align: center;
+    pointer-events: auto;
+    opacity: 0;
+    transform: translateY(100px);
+    transition: all 1s ease;
+    background: transparent;
+    /* Transparent to show constellations */
+    position: relative;
+    /* Maintain relative for children */
+}
+
+/* Visible when scrolled into view */
+.projects-visible .projects-section {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* PCB Pattern Background REMOVED */
+
+.section-heading {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 2.5rem;
+    color: #d4af37;
+    /* Gold */
+    margin-bottom: 80px;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    letter-spacing: 4px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    display: inline-block;
+    padding-bottom: 20px;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+}
+
+/* PCB CARD STYLES */
+.pcb-card {
+    background: #0a0a0a;
+    border: 2px solid #333;
+    padding: 30px;
+    text-align: left;
+    position: relative;
+    transition: all 0.4s ease;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Gold Trace Accent */
+.pcb-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #d4af37, #b8860b, #d4af37);
+}
+
+.pcb-card:hover {
+    border-color: #d4af37;
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
+}
+
+/* Decorative Traces */
+.trace-line {
+    position: absolute;
+    background: #333;
+    transition: 0.4s;
+}
+
+.trace-top {
+    top: -15px;
+    left: 50%;
+    width: 2px;
+    height: 15px;
+    background: #333;
+}
+
+.pcb-card:hover .trace-line {
+    background: #d4af37;
+    box-shadow: 0 0 8px #d4af37;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: #555;
+    margin-bottom: 20px;
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 1px;
+}
+
+.project-id {
+    color: #666;
+}
+
+.project-status {
+    font-weight: bold;
+}
+
+.status-active {
+    color: #4aff4a;
+    text-shadow: 0 0 5px rgba(74, 255, 74, 0.4);
+}
+
+.status-opt {
+    color: #00bfff;
+}
+
+.status-print {
+    color: #d84339;
+}
+
+.status-concept {
+    color: #ffa502;
+}
+
+/* Chip Deco */
+.project-chip-deco {
+    width: 40px;
+    height: 40px;
+    background: #111;
+    border: 1px solid #444;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.project-chip-deco::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background: #222;
+    border: 1px solid #000;
+}
+
+.project-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.6rem;
+    color: #eee;
+    margin-bottom: 15px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+.project-tech {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid #222;
+}
+
+.project-tech span {
+    font-size: 10px;
+    color: #d4af37;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 3px 6px;
+    text-transform: uppercase;
+}
+
+.project-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: #888;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.card-footer {
+    text-align: right;
+    font-size: 11px;
+    color: #d4af37;
+    letter-spacing: 1px;
+    margin-top: 15px;
+    opacity: 0.6;
+}
+
+.pcb-card:hover .card-footer {
+    opacity: 1;
+    text-shadow: 0 0 5px #d4af37;
+}
+
+
+/* Active States */
+.scene-active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Allow pointer events to reach scroll */
+.scene-active .lamp-column {
+    bottom: 7.5%;
+}
+
+.scene-active .jute-string-container {
+    animation: stringDropDangle 2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.lights-on .lamp-emitter {
+    background: #fff5e6;
+    /* Slight orange tint white */
+    box-shadow: 0 0 15px #ffaa00;
+    /* Orange glow */
+}
+
+.lights-on .lamp-column::before {
+    opacity: 1;
+    background: radial-gradient(ellipse at center, rgba(255, 200, 150, 0.15) 0%, transparent 70%);
+    /* Warm volumetric */
+}
+
+.lights-on .about-card {
+    transform: scale(1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .lamp-column {
+        display: none;
+    }
+
+    /* Hide lamps on mobile to save space */
+    .about-card {
+        padding: 30px;
+        margin-top: -60vh;
+        width: 90%;
+    }
+
+    .hero-font-style {
+        font-size: 12vw;
+    }
+
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+}
