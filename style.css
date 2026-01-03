@@ -900,19 +900,18 @@ body {
 
 /* --- PROJECTS SECTION (PCB THEME) --- */
 .projects-section {
-    width: 100%;
-    max-width: 1200px;
+    width: 120%;
+    max-width: 1450px;
+    /* Increased from 1100px */
     margin: 0 auto;
-    padding: 100px 20px 200px 20px;
+    padding: 10px 30px 10px;
     text-align: center;
     pointer-events: auto;
     opacity: 0;
     transform: translateY(100px);
     transition: all 1s ease;
     background: transparent;
-    /* Transparent to show constellations */
     position: relative;
-    /* Maintain relative for children */
 }
 
 /* Visible when scrolled into view */
@@ -927,26 +926,28 @@ body {
     font-family: 'Share Tech Mono', monospace;
     font-size: 2.5rem;
     color: #d4af37;
-    /* Gold */
-    margin-bottom: 80px;
+    margin-bottom: 50px;
     text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
     letter-spacing: 4px;
     border-bottom: 1px solid rgba(212, 175, 55, 0.2);
     display: inline-block;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
 }
 
 .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 40px;
+    grid-template-columns: repeat(3, 1fr);
+    /* Desktop: 3 Columns */
+    gap: 25px;
+    /* Tighter gap */
 }
 
 /* PCB CARD STYLES */
 .pcb-card {
     background: #0a0a0a;
     border: 2px solid #333;
-    padding: 30px;
+    padding: 22px;
+    /* Slightly increased */
     text-align: left;
     position: relative;
     transition: all 0.4s ease;
@@ -954,6 +955,10 @@ body {
     border-radius: 4px;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    /* Equal height */
+    min-height: 300px;
+    /* Increased from 280px */
 }
 
 /* Gold Trace Accent */
@@ -967,11 +972,43 @@ body {
     background: linear-gradient(90deg, #d4af37, #b8860b, #d4af37);
 }
 
+/* Generic Hover (Base) */
 .pcb-card:hover {
-    border-color: #d4af37;
     transform: translateY(-5px);
-    box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
+    /* Colors overridden by nth-child below */
 }
+
+/* NEON GLOW EFFECTS (nth-child) */
+.pcb-card:nth-child(1):hover {
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+    border-color: #00f3ff;
+}
+
+.pcb-card:nth-child(2):hover {
+    box-shadow: 0 0 25px rgba(255, 0, 255, 0.4);
+    border-color: #ff00ff;
+}
+
+.pcb-card:nth-child(3):hover {
+    box-shadow: 0 0 25px rgba(0, 255, 0, 0.4);
+    border-color: #00ff00;
+}
+
+.pcb-card:nth-child(4):hover {
+    box-shadow: 0 0 25px rgba(0, 85, 255, 0.4);
+    border-color: #0055ff;
+}
+
+.pcb-card:nth-child(5):hover {
+    box-shadow: 0 0 25px rgba(255, 170, 0, 0.4);
+    border-color: #ffaa00;
+}
+
+.pcb-card:nth-child(6):hover {
+    box-shadow: 0 0 25px rgba(188, 19, 254, 0.4);
+    border-color: #bc13fe;
+}
+
 
 /* Decorative Traces */
 .trace-line {
@@ -989,15 +1026,17 @@ body {
 }
 
 .pcb-card:hover .trace-line {
-    background: #d4af37;
-    box-shadow: 0 0 8px #d4af37;
+    background: currentColor;
+    /* Matches the border color */
+    box-shadow: 0 0 8px currentColor;
 }
 
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 11px;
+    font-size: 0.72rem;
+    /* Slightly increased */
     color: #555;
     margin-bottom: 20px;
     font-family: 'Share Tech Mono', monospace;
@@ -1053,7 +1092,8 @@ body {
 
 .project-title {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 1.6rem;
+    font-size: 1.3rem;
+    /* Increased from 1.25rem */
     color: #eee;
     margin-bottom: 15px;
     font-weight: 400;
@@ -1070,7 +1110,8 @@ body {
 }
 
 .project-tech span {
-    font-size: 10px;
+    font-size: 0.68rem;
+    /* Slightly increased */
     color: #d4af37;
     border: 1px solid rgba(212, 175, 55, 0.3);
     padding: 3px 6px;
@@ -1079,9 +1120,10 @@ body {
 
 .project-desc {
     font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    /* Increased from 0.8rem */
     color: #888;
-    line-height: 1.6;
+    line-height: 1.55;
     margin-bottom: 20px;
 }
 
@@ -1133,6 +1175,14 @@ body {
 }
 
 /* Responsive Adjustments */
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+        /* Tablet: 2 Columns */
+    }
+}
+
 @media (max-width: 768px) {
     .lamp-column {
         display: none;
@@ -1150,6 +1200,7 @@ body {
     }
 
     .projects-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(1, 1fr);
+        /* Mobile: 1 Column */
     }
 }
