@@ -1074,24 +1074,16 @@ a {
 
 /* Chip Deco */
 .project-chip-deco {
-    width: 40px;
-    height: 40px;
-    background: #111;
-    border: 1px solid #444;
+    width: 50px;
+    height: 50px;
     margin-bottom: 20px;
     position: relative;
 }
 
-.project-chip-deco::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 20px;
-    height: 20px;
-    background: #222;
-    border: 1px solid #000;
+.project-chip-deco img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .project-title {
@@ -1216,4 +1208,473 @@ a {
         grid-template-columns: repeat(1, 1fr);
         /* Mobile: 1 Column */
     }
+}
+
+/* =========================================
+   --- 8. SKILLS SECTION (CONSTELLATIONS) ---
+   ========================================= */
+
+.skills-section {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    pointer-events: none;
+    /* Let canvas clicks through where empty */
+    z-index: 10;
+    opacity: 0;
+    transform: translateY(100px);
+    transition: all 1s ease;
+}
+
+.skills-visible .skills-section {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#skills-overlay {
+    position: absolute;
+    top: 100px;
+    left: 0;
+    width: 100%;
+    height: 70vh;
+    pointer-events: none;
+    /* the elements inside will also be pointer-events: none */
+}
+
+.skill-text {
+    position: absolute;
+    color: #fff;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.6rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-shadow: 0 0 5px #d84339, 0 0 15px #d84339, 0 0 25px #d4af37;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+    letter-spacing: -2px;
+    transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), letter-spacing 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+    z-index: 200;
+}
+
+.skill-text.active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    letter-spacing: 2px;
+}
+
+/* =========================================
+   --- 9. WORK EXPERIENCE (TERMINAL) ---
+   ========================================= */
+
+.exp-section {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-top: 50px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 1s ease;
+}
+
+.exp-visible .exp-section {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.term-window {
+    width: 90%;
+    max-width: 1000px;
+    /* Increased from 800px */
+    margin: 40px auto 0;
+    background: rgba(5, 5, 5, 0.95);
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(216, 67, 57, 0.1);
+    font-family: 'Share Tech Mono', monospace;
+    text-align: left;
+}
+
+.term-header {
+    background: #1a1a1a;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #333;
+}
+
+.term-top-btns {
+    display: flex;
+    gap: 8px;
+    margin-right: 20px;
+}
+
+.term-btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.term-btn.red {
+    background: #ff5f56;
+}
+
+.term-btn.yellow {
+    background: #ffbd2e;
+}
+
+.term-btn.green {
+    background: #27c93f;
+}
+
+.term-title {
+    color: #888;
+    font-size: 0.9rem;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.term-body {
+    padding: 25px;
+    /* Slightly more breathing room inside */
+    height: 500px;
+    /* Increased from 400px to give more space for logs */
+    overflow-y: auto;
+    color: #ddd;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.term-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.term-body::-webkit-scrollbar-track {
+    background: #111;
+}
+
+.term-body::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+.term-prompt {
+    color: #d4af37;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.term-line {
+    margin-bottom: 10px;
+}
+
+.term-output {
+    color: #aaa;
+    margin-left: 20px;
+    border-left: 2px solid #555;
+    padding-left: 10px;
+}
+
+.term-interactive {
+    margin-top: 20px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.term-quick-cmds {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.term-btn-cmd {
+    background: rgba(216, 67, 57, 0.1);
+    border: 1px solid #d84339;
+    color: #d84339;
+    font-family: inherit;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.term-btn-cmd:hover {
+    background: #d84339;
+    color: #fff;
+    box-shadow: 0 0 10px #d84339;
+}
+
+/* --- Terminal Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .term-window {
+        width: 95%;
+        /* Take up more width on smaller screens */
+        margin-top: 20px;
+    }
+
+    .term-body {
+        height: 60vh;
+        /* Make terminal scale to available vertical screen real estate instead of fixed px */
+        min-height: 400px;
+        padding: 15px;
+        font-size: 1rem;
+        /* Slightly smaller text for mobile */
+    }
+
+    .term-header {
+        padding: 8px 15px;
+    }
+
+    .term-title {
+        font-size: 0.8rem;
+    }
+
+    /* Ensure the quick command buttons stack nicely */
+    .term-quick-cmds {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .term-btn-cmd {
+        width: 100%;
+        text-align: left;
+        padding: 10px;
+    }
+}
+
+/* =========================================
+   --- 10. CONTACT (HOLOGRAPHIC SCANNER) ---
+   ========================================= */
+
+.final-printer-scene {
+    perspective: 1200px;
+    width: 100%;
+    height: 500px;
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 1s ease-in-out;
+}
+
+.final-bed {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    background: #111;
+    background-image:
+        linear-gradient(rgba(255, 0, 255, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 0, 255, 0.15) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 3px solid #333;
+    /* Default isometric view */
+    transform: rotateX(60deg) rotateZ(45deg);
+    transform-style: preserve-3d;
+    box-shadow: 20px 20px 60px rgba(0, 0, 0, 0.9);
+    transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 1.5s ease;
+}
+
+/* When zoomed in, face the camera */
+.final-bed.zoomed-in {
+    transform: rotateX(0deg) rotateZ(0deg) scale(1.2);
+    box-shadow: 0 0 50px rgba(255, 0, 255, 0.2);
+}
+
+/* Common Layers and Links */
+.final-print-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transform: translateZ(1px);
+}
+
+.final-link {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    pointer-events: none;
+    /* Disable clicking while printing */
+}
+
+/* Hardcoded link positions on the bed */
+.final-link:nth-child(1) {
+    top: 25%;
+    left: 25%;
+}
+
+.final-link:nth-child(2) {
+    top: 25%;
+    left: 75%;
+}
+
+.final-link:nth-child(3) {
+    top: 75%;
+    left: 25%;
+}
+
+.final-link:nth-child(4) {
+    top: 75%;
+    left: 75%;
+}
+
+.final-icon {
+    width: 100%;
+    height: 100%;
+}
+
+.final-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.final-label {
+    font-family: 'Share Tech Mono', monospace;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.5s;
+    transform: translateY(10px) translateZ(10px);
+    text-shadow: 1px 1px 2px #000;
+}
+
+.final-link.printed .final-label {
+    opacity: 1;
+}
+
+.final-bed.zoomed-in .final-link {
+    pointer-events: auto;
+    /* Enable clicks */
+}
+
+/* =========================================
+   HOLOGRAPHIC SCANNER DETAILS
+   ========================================= */
+
+.scanner-gantry {
+    position: absolute;
+    top: -10%;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    z-index: 20;
+    transform: translateZ(50px);
+    /* Hovers 50px above the bed */
+    transform-style: preserve-3d;
+    transition: top 4s linear;
+}
+
+/* The physical bar of the scanner */
+.scanner-rail {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: #222;
+    border: 1px solid #444;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+}
+
+/* The faint wide plane of light */
+.scanner-laser-plane {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    /* reaches ground z=50 to z=0 */
+    background: linear-gradient(to bottom, rgba(255, 0, 255, 0.2), transparent);
+    transform-origin: top;
+    transform: rotateX(-90deg);
+    /* project directly downwards onto bed */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* DJ Laser Container */
+.laser-projector {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    width: 100%;
+    height: 0;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+/* Individual dynamic DJ lasers */
+.dj-laser {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 120px;
+    /* Long enough to hit the bed and sweep */
+    transform-origin: top center;
+    transform: rotateX(-80deg) rotateZ(0deg);
+    /* default angle */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    /* transition for transform is set dynamically in JS */
+}
+
+/* Activation */
+.scanner-bed.scanning .scanner-laser-plane {
+    opacity: 1;
+}
+
+.scanner-bed.scanning .dj-laser {
+    opacity: 0.7;
+}
+
+/* Pulsing effect when printing */
+.scanner-bed.printing-burst .dj-laser {
+    opacity: 1;
+    width: 3px;
+    filter: brightness(1.5);
+}
+
+/* 3D icons */
+.scanner-bed .final-icon {
+    transform: translateZ(-20px) scale(0.8);
+    opacity: 0;
+    color: #ff00ff;
+    filter: drop-shadow(0 0 10px #ff00ff);
+}
+
+.scanner-bed .final-link.printed .final-icon {
+    transform: translateZ(15px) scale(1);
+    opacity: 1;
+    color: #fff;
+    filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 10px rgba(255, 0, 255, 0.4));
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s, color 0.5s;
+}
+
+.scanner-bed .final-label {
+    color: #ff00ff;
+}
+
+/* Clean up sequence */
+.scanner-bed.zoomed-in .scanner-gantry {
+    display: none;
+}
+
+.scanner-bed.zoomed-in .final-link:hover .final-icon {
+    transform: translateZ(30px) scale(1.1);
+    filter: drop-shadow(0 0 15px #ff00ff);
+    color: #ff00ff;
 }
