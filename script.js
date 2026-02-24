@@ -11,17 +11,35 @@ window.addEventListener('touchend', () => {
 });
 
 // Allow instant trigger on tap/click
-canvas.addEventListener('click', (e) => {
+// Function to handle canvas clicks/taps
+function handleCanvasInteraction(e) {
     if (!isSkillsActive) return;
+
+    // Support both mouse clicks and touch events
+    let clientX, clientY;
+    if (e.touches && e.touches.length > 0) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+        e.preventDefault(); // Prevent default touch behavior (like double-tap zoom or scrolling) if hitting a cluster
+    } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+    }
+
+    let hitCluster = false;
     for (let c of constellations) {
-        const dx = c.x - e.clientX;
-        const dy = c.y - e.clientY;
+        const dx = c.x - clientX;
+        const dy = c.y - clientY;
         if (Math.sqrt(dx * dx + dy * dy) < 100) {
             triggerShootingStar(c);
+            hitCluster = true;
             break;
         }
     }
-});
+}
+
+canvas.addEventListener('click', handleCanvasInteraction);
+canvas.addEventListener('touchstart', handleCanvasInteraction, { passive: false });
 window.addEventListener('resize', resize); resize();
 
 // Skills Settings
