@@ -1180,7 +1180,6 @@ a {
 }
 
 /* Responsive Adjustments */
-/* Responsive Adjustments */
 @media (max-width: 1024px) {
     .projects-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1190,14 +1189,29 @@ a {
 
 @media (max-width: 768px) {
     .lamp-column {
-        display: none;
+        width: 10px;
     }
 
-    /* Hide lamps on mobile to save space */
+    .lamp-left {
+        left: 2%;
+    }
+
+    .lamp-right {
+        right: 2%;
+    }
+
+    .jute-string-container {
+        left: 85%;
+        transform: translateX(0);
+    }
+
     .about-card {
-        padding: 30px;
-        margin-top: -60vh;
+        padding: 20px;
+        margin-top: 0vh;
+        /* Centered vertically naturally */
         width: 90%;
+        max-width: 100%;
+        font-size: 0.95rem;
     }
 
     .hero-font-style {
@@ -1205,8 +1219,21 @@ a {
     }
 
     .projects-grid {
+        display: grid;
         grid-template-columns: repeat(1, 1fr);
         /* Mobile: 1 Column */
+        max-height: 65vh;
+        overflow-y: auto;
+        padding-right: 10px;
+        /* Slight padding for the scrollbar */
+        gap: 20px;
+        -webkit-overflow-scrolling: touch;
+        /* Smooth iOS scroll */
+    }
+
+    .section-heading {
+        font-size: 1.8rem;
+        letter-spacing: 2px;
     }
 }
 
@@ -1266,6 +1293,23 @@ a {
     letter-spacing: 2px;
 }
 
+.skills-instruction {
+    font-size: 1rem;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .skill-text {
+        font-size: 1.25rem;
+        /* Smaller text on mobile */
+    }
+
+    .skills-instruction {
+        font-size: 0.85rem;
+    }
+}
+
 /* =========================================
    --- 9. WORK EXPERIENCE (TERMINAL) ---
    ========================================= */
@@ -1275,6 +1319,8 @@ a {
     max-width: 1000px;
     margin: 0 auto;
     padding-top: 50px;
+    text-align: center;
+    /* Center the heading */
     opacity: 0;
     transform: translateY(50px);
     transition: all 1s ease;
@@ -1482,6 +1528,32 @@ a {
 .final-bed.zoomed-in {
     transform: rotateX(0deg) rotateZ(0deg) scale(1.2);
     box-shadow: 0 0 50px rgba(255, 0, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+    .final-printer-scene {
+        height: 400px;
+        margin-top: 20px;
+    }
+
+    .final-bed {
+        width: 280px;
+        height: 280px;
+        background-size: 15px 15px;
+    }
+
+    .final-bed.zoomed-in {
+        transform: rotateX(0deg) rotateZ(0deg) scale(0.95);
+    }
+
+    .final-link {
+        width: 45px;
+        height: 45px;
+    }
+
+    .final-label {
+        font-size: 0.75rem;
+    }
 }
 
 /* Common Layers and Links */

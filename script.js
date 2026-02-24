@@ -1,9 +1,27 @@
 const canvas = document.getElementById('particle-canvas'); const ctx = canvas.getContext('2d');
-let particles = []; let particleCount = 80; let connectionDistance = 120;
+let particles = []; let particleCount = window.innerWidth < 768 ? 40 : 80; let connectionDistance = window.innerWidth < 768 ? 80 : 120;
 let mouse = { x: null, y: null, radius: 200, hoverTime: 0, hoverTarget: null };
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
 window.addEventListener('mouseout', () => { mouse.x = undefined; mouse.y = undefined; mouse.hoverTime = 0; mouse.hoverTarget = null; });
-function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+
+// Clear virtual mouse on touch devices after tap so it doesn't auto-trigger forever
+window.addEventListener('touchend', () => {
+    setTimeout(() => { mouse.x = undefined; mouse.y = undefined; mouse.hoverTime = 0; mouse.hoverTarget = null; }, 100);
+});
+
+// Allow instant trigger on tap/click
+canvas.addEventListener('click', (e) => {
+    if (!isSkillsActive) return;
+    for (let c of constellations) {
+        const dx = c.x - e.clientX;
+        const dy = c.y - e.clientY;
+        if (Math.sqrt(dx * dx + dy * dy) < 100) {
+            triggerShootingStar(c);
+            break;
+        }
+    }
+});
 window.addEventListener('resize', resize); resize();
 
 // Skills Settings
@@ -21,7 +39,7 @@ let shootingStars = [];
 
 function initConstellations() {
     constellations = [];
-    const padding = 200; // Keep away from edges
+    const padding = window.innerWidth < 768 ? 40 : 200; // Small padding on mobile to stop merging
 
     // Clear old text if any
     const overlay = document.getElementById('skills-overlay');
@@ -46,7 +64,8 @@ function initConstellations() {
     });
 
     // Add extra particles for density ONLY during skills section
-    while (particles.length < 150) {
+    const targetDensity = window.innerWidth < 768 ? 75 : 150;
+    while (particles.length < targetDensity) {
         particles.push(new Particle(true)); // isExtra = true
     }
     connectionDistance = 100;
