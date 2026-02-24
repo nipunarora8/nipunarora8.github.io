@@ -10,15 +10,13 @@ window.addEventListener('resize', resize); resize();
 let isSkillsActive = false;
 let constellations = [];
 const skillsData = [
-    { category: 'Languages', skills: ['Python', 'C++', 'HTML', 'JavaScript', 'Kotlin', 'Java', 'SQL'] },
+    { category: 'Languages', skills: ['Python', 'C++', 'HTML'] },
     { category: 'AI/ML', skills: ['PyTorch', 'TensorFlow', 'OpenCV', 'Scikit-Learn', 'Keras', 'NLP'] },
-    { category: 'Hardware', skills: ['3D Printing', 'Arduino', 'Raspberry Pi', 'PCB Design', 'Soldering'] },
-    { category: 'Tools', skills: ['Docker', 'Git', 'Linux', 'ROS', 'Bash', 'Vim'] },
-    { category: 'Optimization', skills: ['A* Algorithm', 'Numba', 'Parallel Computing', 'Cython'] },
-    { category: 'Web Frameworks', skills: ['React', 'Node.js', 'Flask', 'Django'] },
-    { category: 'Cloud', skills: ['AWS', 'GCP', 'Azure', 'Firebase'] },
-    { category: 'Data Analysis', skills: ['Pandas', 'NumPy', 'Matplotlib', 'Jupyter'] }
+    { category: 'Hardware', skills: ['3D Printing', 'Arduino', 'Raspberry Pi'] },
+    { category: 'Generative AI', skills: ['Generative AI', 'Agentic AI', "LLM", 'RAG', 'ChatGPT', 'Claude', 'LLaMa', "Gemini"] },
+    { category: 'Product Development', skills: ['Product Development', 'DIY', '3D Design', '3D Printing', 'System Design', 'UI/UX'] },
 ];
+
 let shootingStars = [];
 
 function initConstellations() {
@@ -40,6 +38,7 @@ function initConstellations() {
             vy: baseVy,
             category: data.category,
             skills: data.skills,
+            shuffledSkills: [...data.skills].sort(() => Math.random() - 0.5), // Initialize shuffled pool
             particles: [],
             cooldown: 0,
             activeTextEl: null
@@ -264,8 +263,12 @@ function triggerShootingStar(constellation) {
         setTimeout(() => { if (textToFade.parentElement) textToFade.remove(); }, 500);
     }
 
-    // Pick random target skill
-    const skillName = constellation.skills[Math.floor(Math.random() * constellation.skills.length)];
+    // Pick random target skill from the shuffled pool
+    if (!constellation.shuffledSkills || constellation.shuffledSkills.length === 0) {
+        // Reshuffle when empty to ensure pure random without immediate repeats
+        constellation.shuffledSkills = [...constellation.skills].sort(() => Math.random() - 0.5);
+    }
+    const skillName = constellation.shuffledSkills.pop();
 
     const textEl = document.createElement('div');
     textEl.className = 'skill-text';
@@ -619,26 +622,33 @@ window.addEventListener('load', () => {
 
 // --- Experience Option 3 (Terminal) Interactivity ---
 const termLogs = {
-    'cat techcorp.log': [
-        "Reading log file /career/techcorp.log...",
-        "Role: Software Engineering Intern",
-        "Date: 2021 - 2022",
-        "Action: Fixed severe asynchronous memory leaks in distributed worker queues.",
-        "Result: +8,540 lines, -3,200 lines. Reliability increased by 40%."
+    'cat max_planck.log': [
+        "Reading log file /career/max_planck.log...",
+        "Role: Research Assistant",
+        "Company: Max Planck Institute for Human Development",
+        "Date: Aug 2022 - Present",
+        "Result: Engineered scalable AI workflows and automated large-scale LLM-driven research pipelines."
     ],
-    'cat uf.log': [
-        "Reading log file /career/uf.log...",
-        "Role: Machine Learning Researcher",
-        "Date: 2022 - 2024",
-        "Action: Trained custom transformer models for high-speed object tracking in 3D space.",
-        "Result: +12,020 lines, -1,500 lines. Published paper accepted."
+    'cat synergylabs.log': [
+        "Reading log file /career/synergylabs.log...",
+        "Role: Deep Learning Intern",
+        "Company: SynergyLabs Technology",
+        "Date: Nov 2021 - Mar 2022",
+        "Result: Trained and deployed lightweight CV models on edge devices for intelligent traffic systems."
     ],
-    'cat neurotech.log': [
-        "Reading log file /career/neurotech.log...",
-        "Role: Senior AI Engineer",
-        "Date: 2024 - Present",
-        "Action: Architected scalable 3D tracing algorithms for neural dendrites.",
-        "Result: +24,500 lines, -4,000 lines. Core engine speeds increased by 10x."
+    'cat ineuron.log': [
+        "Reading log file /career/ineuron.log...",
+        "Role: Data Science Intern",
+        "Company: iNeuron.ai",
+        "Date: Jun 2021 - Aug 2021",
+        "Result: Developed computer vision solutions for motion, face, and weapon detection in home security systems."
+    ],
+    'cat sabertooth.log': [
+        "Reading log file /career/sabertooth.log...",
+        "Role: Data Analyst Intern",
+        "Company: Sabertooth Technologies",
+        "Date: Oct 2020 - Mar 2021",
+        "Result: Scraped and processed large-scale market data to build comparative e-commerce platforms."
     ]
 };
 
@@ -673,6 +683,39 @@ function runTermCommand(cmd) {
 }
 
 // --- Contact Section 3D Printer Animation ---
+let scannerTimeouts = [];
+
+function resetScannerSequence() {
+    // Clear all pending timeouts to stop the current animation mid-flight
+    scannerTimeouts.forEach(clearTimeout);
+    scannerTimeouts = [];
+
+    const gantry = document.getElementById('scanner-gantry');
+    const bed = document.getElementById('scanner-bed');
+    const links = document.querySelectorAll('.final-link');
+    const projector = document.getElementById('laser-projector');
+
+    if (bed) {
+        bed.classList.remove('scanning', 'printing-burst', 'zoomed-in');
+    }
+
+    if (gantry) {
+        gantry.style.opacity = '1';
+        gantry.style.transition = 'none'; // Temporarily disable transition
+        gantry.style.top = '-10%'; // Reset to start position
+        void gantry.offsetWidth; // Force reflow to commit transition-none
+        gantry.style.transition = 'top 4s linear, opacity 0.3s'; // Restore proper transitions
+    }
+
+    if (links) {
+        links.forEach(link => link.classList.remove('printed'));
+    }
+
+    if (projector) {
+        projector.innerHTML = '';
+    }
+}
+
 const contactObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -682,6 +725,12 @@ const contactObserver = new IntersectionObserver((entries) => {
             if (entry.target.id === 'contact-final' && !entry.target.printTriggered) {
                 entry.target.printTriggered = true;
                 runScannerSequence();
+            }
+        } else {
+            // When scrolling away, reset the animation state
+            if (entry.target.id === 'contact-final') {
+                entry.target.printTriggered = false;
+                resetScannerSequence();
             }
         }
     });
@@ -696,6 +745,9 @@ function runScannerSequence() {
     const projector = document.getElementById('laser-projector');
 
     if (!gantry || !bed || !projector) return;
+
+    // Flush any previous state just in case
+    resetScannerSequence();
 
     // --- Generate Criss-Cross Lasers ---
     projector.innerHTML = ''; // Reset
@@ -716,9 +768,9 @@ function runScannerSequence() {
         projector.appendChild(laser);
 
         // Stagger the initial start times so they don't all sweep in perfect unison
-        setTimeout(() => {
+        scannerTimeouts.push(setTimeout(() => {
             animateLaser(laser);
-        }, Math.random() * 500);
+        }, Math.random() * 500));
     }
 
     // Function to recursively animate a single laser
@@ -737,9 +789,9 @@ function runScannerSequence() {
         laser.style.transition = `transform ${duration}ms ease-in-out, opacity 200ms`;
         laser.style.transform = `rotateX(-80deg) rotateZ(${targetAngle}deg)`;
 
-        setTimeout(() => {
+        scannerTimeouts.push(setTimeout(() => {
             if (bed.classList.contains('scanning')) animateLaser(laser);
-        }, duration);
+        }, duration));
     }
 
     // --- Sequence Timing ---
@@ -748,36 +800,36 @@ function runScannerSequence() {
     bed.classList.add('scanning');
 
     // 2. Start moving gantry across the bed
-    setTimeout(() => {
+    scannerTimeouts.push(setTimeout(() => {
         gantry.style.top = '110%'; // Sweep down
-    }, 500);
+    }, 500));
 
     // 3. First Row Hit (~25% down the bed)
-    setTimeout(() => {
+    scannerTimeouts.push(setTimeout(() => {
         bed.classList.add('printing-burst'); // Flash ALL lasers brighter and thicker
         if (links[0]) links[0].classList.add('printed');
         if (links[1]) links[1].classList.add('printed');
 
-        setTimeout(() => { bed.classList.remove('printing-burst'); }, 200);
-    }, 1700);
+        scannerTimeouts.push(setTimeout(() => { bed.classList.remove('printing-burst'); }, 200));
+    }, 1700));
 
     // 4. Second Row Hit (~75% down the bed)
-    setTimeout(() => {
+    scannerTimeouts.push(setTimeout(() => {
         bed.classList.add('printing-burst');
         if (links[2]) links[2].classList.add('printed');
         if (links[3]) links[3].classList.add('printed');
 
-        setTimeout(() => { bed.classList.remove('printing-burst'); }, 200);
-    }, 3350);
+        scannerTimeouts.push(setTimeout(() => { bed.classList.remove('printing-burst'); }, 200));
+    }, 3350));
 
     // 5. Cleanup and Zoom In
-    setTimeout(() => {
+    scannerTimeouts.push(setTimeout(() => {
         bed.classList.remove('scanning'); // Turns lasers off
         gantry.style.opacity = '0'; // Hide the gantry cleanly
         projector.innerHTML = ''; // Delete lasers to save DOM
 
-        setTimeout(() => {
+        scannerTimeouts.push(setTimeout(() => {
             bed.classList.add('zoomed-in');
-        }, 500);
-    }, 4500);
+        }, 500));
+    }, 4500));
 }
